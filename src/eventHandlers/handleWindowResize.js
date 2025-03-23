@@ -1,11 +1,16 @@
 import { gameAssets } from "../game/gameAssets";
 import gameStore from "../game/gameStore";
+import { getWindowAspectRatio, isMobileView } from "../utils/viewPortTools";
 
 export default function handleWindowResize() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  if (isMobileView()) {
+    gameAssets.cameras.camera1.position.set(-66, 13, 8);
+  } else {
+    gameAssets.cameras.camera1.position.set(-65, 14, 7);
+  }
+
   const activeCamera = gameStore.getState().activeCamera;
-  activeCamera.aspect = width / height;
+  activeCamera.aspect = getWindowAspectRatio();
   activeCamera.updateProjectionMatrix();
-  gameAssets.renderer.setSize(width, height);
+  gameAssets.renderer.setSize(window.innerWidth, window.innerHeight);
 }

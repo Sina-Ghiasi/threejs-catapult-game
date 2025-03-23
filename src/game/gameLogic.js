@@ -10,15 +10,23 @@ import { gameAssets } from "./gameAssets";
 import { createAudio } from "../systems/audioSystem";
 import {
   gameResultElement,
-  instructionElement,
+  menuScreenElement,
   powerElement,
 } from "../domElements";
+import createModal from "../utils/createModal.js";
 
 let attackInterval, stoneLimitInterval;
 
-export function initializeNewGame() {
+export async function initializeNewGame() {
+  const { isLoading } = gameStore.getState();
+  if (isLoading) return;
+
+  const level = await getLevelFromUser();
+  if (level === null) return;
+
   resetGame();
 
+  gameStore.dispatch({ type: "SET_LEVEL", payload: level });
   positionUserTower();
   positionUserCatapult();
   positionEnemies();
@@ -26,35 +34,33 @@ export function initializeNewGame() {
   attackInterval = setInterval(enemyAttack, 3000);
   stoneLimitInterval = setInterval(() => enforceStoneLimit(10), 2000);
 
-  gameStore.dispatch({
-    type: "SET_ACTIVE_CAMERA",
-    payload: gameAssets.cameras.camera1,
-  });
-
   const backgroundAudio = createAudio("background", true, 0.05);
-  if (backgroundAudio) backgroundAudio.play();
+  if (backgroundAudio && !backgroundAudio.isPlaying) backgroundAudio.play();
 
-  powerElement.classList.add("show");
-  instructionElement.classList.remove("show");
-  gameResultElement.classList.remove("show");
-
+  powerElement.classList.remove("hidden");
+  gameResultElement.classList.add("hidden");
+  menuScreenElement.classList.add("hidden");
   gameStore.dispatch({ type: "PLAYING" });
 }
 
 function gameLost() {
-  powerElement.classList.remove("show");
+  powerElement.classList.add("hidden");
+
   gameResultElement.innerHTML = "Game Lost";
+  gameResultElement.classList.remove("hidden");
   gameResultElement.classList.remove("won");
-  gameResultElement.classList.add("show", "lost");
+  gameResultElement.classList.add("lost");
 
   gameStore.dispatch({ type: "GAME_LOST" });
 }
 
 function gameWon() {
-  powerElement.classList.remove("show");
+  powerElement.classList.add("hidden");
+
   gameResultElement.innerHTML = "Victory";
+  gameResultElement.classList.remove("hidden");
   gameResultElement.classList.remove("lost");
-  gameResultElement.classList.add("show", "won");
+  gameResultElement.classList.add("won");
 
   gameStore.dispatch({ type: "GAME_WON" });
 }
@@ -64,11 +70,11 @@ function resetGame() {
   if (attackInterval) clearInterval(attackInterval);
   if (stoneLimitInterval) clearInterval(stoneLimitInterval);
 
-  // reset game state and values
-  gameStore.dispatch({ type: "RESET_GAME" });
-
   // reset game objects
   removeAllObjects();
+
+  // reset game state and values
+  gameStore.dispatch({ type: "RESET_GAME" });
 }
 
 function getNewPosition(index) {
@@ -224,4 +230,26 @@ function getPlayerCatapult() {
   return activeObjects.catapults.find(
     (object) => object.body.userData.name === "playerCatapult"
   );
+}
+
+function getLevelFromUser() {
+  return new Promise((resolve) => {
+    createModal({
+      title: "Level Selection",
+      input: true,
+      inputSettings: {
+        label: "Please type the level number (1-4):",
+        type: "number",
+        value: 1,
+        min: 1,
+        max: 4,
+        step: 1,
+        required: true,
+      },
+      onConfirm: (level) => resolve(parseInt(level)),
+      onCancel: () => resolve(null),
+      confirmText: "Start",
+      cancelText: "Cancel",
+    });
+  });
 }

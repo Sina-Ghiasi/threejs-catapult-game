@@ -1,4 +1,4 @@
-import { loadingElement } from "../domElements";
+import { loadingScreenElement } from "../domElements";
 import gameStore from "../game/gameStore";
 import { createCatapultBody, createCatapultMesh } from "../objects/catapult";
 import { createStandBody, createStandMesh } from "../objects/stand";
@@ -16,7 +16,6 @@ import { loadTextures } from "../utils/loadTexture";
 import { loadAudios } from "../utils/loadAudio";
 import createStats from "../utils/createStats";
 import { BASE_URL, IS_DEV_MODE } from "../config/env";
-import { createAudio } from "../systems/audioSystem";
 
 export const gameAssets = {
   world: null,
@@ -48,11 +47,11 @@ export default async function initGameAssets() {
       type: "SET_ACTIVE_CAMERA",
       payload: gameAssets.cameras.camera1,
     });
-    loadingElement.innerHTML = "Ready to go! (Click space)";
     gameStore.dispatch({ type: "LOADED" });
+    loadingScreenElement.classList.add("hidden");
   } catch (error) {
     console.error("Error loading initial game assets:", error);
-    loadingElement.innerHTML = "Error loading game assets";
+    alert("Error loading game assets");
   }
 }
 

@@ -9,7 +9,7 @@ const gameInitialState = {
   isAutoPaused: false,
   level: 1,
   activeCamera: null,
-  remainingCameraToggle: 3,
+  remainingCameraSwitch: 2,
   userShootVelocity: 4,
 };
 
@@ -28,10 +28,12 @@ function gameReducer(state, action) {
       return {
         ...state,
         isPlaying: false,
+        isPaused: false,
+        isAutoPaused: false,
         result: null,
         activeCamera: camera1,
         userShootVelocity: 4,
-        remainingCameraToggle: 3,
+        remainingCameraSwitch: 2,
       };
     case "AUTO_PAUSE":
       return { ...state, isPaused: true, isAutoPaused: true };
@@ -46,11 +48,11 @@ function gameReducer(state, action) {
         ...state,
         userShootVelocity: action.payload,
       };
-    case "TOGGLE_CAMERA":
+    case "SWITCH_CAMERA":
       return {
         ...state,
         activeCamera: state.activeCamera === camera1 ? camera2 : camera1,
-        remainingCameraToggle: state.remainingCameraToggle - 1,
+        remainingCameraSwitch: state.remainingCameraSwitch - 1,
       };
     case "SET_ACTIVE_CAMERA":
       return {

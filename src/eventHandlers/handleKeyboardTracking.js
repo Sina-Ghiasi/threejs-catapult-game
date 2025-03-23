@@ -1,7 +1,7 @@
-export const keys = {};
-export function handleKeyboardTrackingDown(event) {
-  keys[event.code] = true;
+export const keyStates = {};
+export function handleKeyboardDownTracking(event) {
+  keyStates[event.code] = true;
 }
-export function handleKeyboardTrackingUp(event) {
-  keys[event.code] = false;
+export function handleKeyboardUpTracking(event) {
+  keyStates[event.code] = false;
 }

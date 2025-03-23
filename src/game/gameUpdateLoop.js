@@ -1,5 +1,5 @@
-import { pausedElement, powerElement } from "../domElements";
-import { keys } from "../eventHandlers/handleKeyboardTracking";
+import { powerElement } from "../domElements";
+import { keyStates } from "../eventHandlers/handleKeyboardTracking";
 import { gameAssets } from "./gameAssets";
 import gameStore from "./gameStore";
 import {
@@ -9,16 +9,16 @@ import {
 } from "../systems/objectSystem.js";
 import { TIME_STEP } from "../config/constants.js";
 import { checkGameEnd } from "./gameLogic.js";
+import { btnStates } from "../eventHandlers/handleBtnTracking.js";
 
 export default function gameUpdateLoop() {
   const { isPaused, userShootVelocity, activeCamera } = gameStore.getState();
-
-  if (isPaused) pausedElement.classList.add("show");
-  else pausedElement.classList.remove("show");
-
   if (!isPaused) {
     // Use our native key state: if A is held down, gradually increase shoot velocity
-    if (keys["KeyA"] && userShootVelocity < 40) {
+    if (
+      (keyStates["KeyA"] || btnStates["shoot-btn"]) &&
+      userShootVelocity < 40
+    ) {
       gameStore.dispatch({
         type: "SET_USER_SHOOT_VELOCITY",
         payload: userShootVelocity + 0.5,

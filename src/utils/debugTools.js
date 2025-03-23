@@ -3,6 +3,7 @@ import gameStore from "../game/gameStore";
 import { gameAssets } from "../game/gameAssets";
 
 const gui = new GUI();
+gui.close();
 const { ambientLight, directionalLight } = gameAssets.lights;
 const { camera1 } = gameAssets.cameras;
 

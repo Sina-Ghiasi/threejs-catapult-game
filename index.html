@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="keywords" content="Three.js, Cannon-es, Game">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name=" keywords" content="Three.js, Cannon-es, Game">
   <meta name="author" content="Sina Ghiasi">
   <meta name="description" content="Three.js & Cannon-es Catapult Game">
   <title>Catapult Game</title>
@@ -13,26 +13,78 @@
 </head>
 
 <body>
-  <div id="instruction" class="show">
-    <h1 class="title">Three.js & Cannon-es Catapult Game</h1>
-    <h2 class="sub-title">Hi, this is the instruction for the catapult game</h2>
-    <p class="content">
-      <b>Space</b> ➔ Start game <em>or</em> restart<br />
-      <b>A</b> ➔ Shoot enemies <br />
-      <b>P</b> ➔ Pause/Unpause <br />
-      <b>C</b> ➔ Toggle camera (2 time)<br />
-    </p>
-    <p class="author">
-      Author: Sina Ghiasi<br />
-      Using Three.js and Cannon‑es libraries
-    </p>
-    <p class="loading">Loading ...</p>
-  </div>
   <div id="webgl">
-    <div id="power">Power:&nbsp;<span></span></div>
-    <div id="gameResult"></div>
-    <div id="paused">Paused</div>
+    <div id="power" class="hidden">Power:&nbsp;<span></span></div>
+    <div id="game-result" class="hidden"></div>
+    <div class="game-controls">
+      <button id="shoot-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396 396" xml:space="preserve">
+          <path fill="currentColor"
+            d="M386 182.665h-11.199c-7.355-85.397-76.067-154.108-161.467-161.466V10c0-5.522-4.479-10-10-10h-10.669c-5.522 0-10 4.478-10 10v11.199C97.268 28.556 28.557 97.268 21.199 182.665H10c-5.522 0-10 4.478-10 10v10.67c0 5.522 4.478 10 10 10h11.199c7.357 85.396 76.068 154.108 161.466 161.466V386c0 5.521 4.478 10 10 10h10.669c5.521 0 10-4.479 10-10v-11.199c85.397-7.355 154.109-76.067 161.467-161.466H386c5.522 0 10-4.478 10-10v-10.67c0-5.522-4.478-10-10-10zM213.334 343.992v-40.064c47.104-6.761 83.832-43.487 90.594-90.593h40.064c-3.481 33.285-18.407 64.572-42.247 88.411-23.84 23.84-55.127 38.766-88.411 42.246zm-30.669 0c-33.285-3.481-64.572-18.407-88.411-42.246s-38.765-55.126-42.246-88.411h40.064c6.761 47.103 43.49 83.832 90.593 90.593v40.064zm0-291.984v40.064c-47.103 6.761-83.832 43.49-90.593 90.593H52.008c3.481-33.285 18.407-64.572 42.246-88.411s55.126-38.765 88.411-42.246zM124.108 198c0-40.744 33.147-73.892 73.892-73.892s73.892 33.147 73.892 73.892-33.148 73.893-73.892 73.893-73.892-33.149-73.892-73.893zm89.226-145.992c33.284 3.48 64.571 18.406 88.411 42.246 23.84 23.839 38.766 55.126 42.247 88.411h-40.064c-6.762-47.103-43.488-83.832-90.594-90.593V52.008z" />
+        </svg>
+      </button>
+      <button id="switch-camera-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-switch-camera">
+          <path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" />
+          <path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5" />
+          <circle cx="12" cy="12" r="3" />
+          <path d="m18 22-3-3 3-3" />
+          <path d="m6 2 3 3-3 3" />
+        </svg>
+      </button>
+      <button id="menu-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu">
+          <line x1="4" x2="20" y1="12" y2="12" />
+          <line x1="4" x2="20" y1="6" y2="6" />
+          <line x1="4" x2="20" y1="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
   </div>
+
+
+
+  <div id="loading-screen">
+    <div class="loading-backdrop"></div>
+    <div class="loader">Loading...</div>
+  </div>
+
+  <div id="menu-screen">
+    <div class="menu-backdrop"></div>
+    <div class="menu">
+      <header class="menu-header">
+        <h1>Catapult Game</h1>
+      </header>
+      <section class="menu-buttons">
+        <button id="start-game">Start</button>
+        <button id="resume-game" class="hidden">Resume</button>
+        <button id="instruction">Instruction</button>
+      </section>
+      <footer class="menu-footer">
+        <p class="author">
+          Author: Sina Ghiasi<br />
+          Using Three.js and Cannon‑es libraries
+        </p>
+      </footer>
+    </div>
+  </div>
+
+
+  <div id="modal-screen" class="hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop"></div>
+    <div class="modal">
+      <header class="modal-header">
+        <h2 class="modal-title"></h2>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </header>
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+
   <script type="module" src="/src/main.js"></script>
 </body>
 
