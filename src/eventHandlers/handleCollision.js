@@ -1,3 +1,4 @@
+import { getCatapultByName } from "../game/gameLogic";
 import { activeObjects, objectsPendingRemoval } from "../systems/objectSystem";
 
 export default function handleCollision(event) {
@@ -11,8 +12,9 @@ export default function handleCollision(event) {
     return;
   }
 
-  if (colliderBodyName === "enemyStone" && otherBodyName === "playerCatapult") {
+  if (colliderBodyName === "enemyStone" && otherBodyName === "userCatapult") {
     objectsPendingRemoval.push(otherBody);
+    getCatapultByName(otherBodyName).mesh.userData.sounds.hitSound.play();
   }
 
   if (
@@ -24,5 +26,6 @@ export default function handleCollision(event) {
     );
     objectsPendingRemoval.push(otherBody);
     objectsPendingRemoval.push(relatedStand.body);
+    getCatapultByName(otherBodyName).mesh.userData.sounds.hitSound.play();
   }
 }

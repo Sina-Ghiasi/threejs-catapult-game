@@ -1,5 +1,5 @@
 import { PerspectiveCamera, Vector3 } from "three";
-import { getWindowAspectRatio, isMobileView } from "../utils/viewPortTools";
+import { getWindowAspectRatio, isMobileView } from "../utils/viewportTools";
 
 export default function createCameras() {
   const camera1 = new PerspectiveCamera(100, getWindowAspectRatio(), 1, 1000);

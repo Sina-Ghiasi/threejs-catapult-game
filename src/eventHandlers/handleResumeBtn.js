@@ -1,4 +1,4 @@
-import { menuScreenElement, resumeBtnElement } from "../domElements";
+import { menuScreenElement } from "../domElements";
 import gameStore from "../game/gameStore";
 
 export default function handleResumeBtn() {

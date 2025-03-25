@@ -18,7 +18,7 @@ export function loadGltfModel(path, manager) {
 
 export async function loadGltfModels(modelPaths, manager) {
   const entries = Object.entries(modelPaths);
-  const promises = entries.map(([key, path]) => loadGltfModel(path, manager));
+  const promises = entries.map(([, path]) => loadGltfModel(path, manager));
 
   const loadedModels = await Promise.all(promises);
 

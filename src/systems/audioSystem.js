@@ -1,16 +1,9 @@
-import { Audio, AudioListener, PositionalAudio } from "three";
+import { Audio, PositionalAudio } from "three";
 import { gameAssets } from "../game/gameAssets";
 
-export default function initAudio() {
-  const listener = new AudioListener();
-  gameAssets.cameras.camera1.add(listener);
-  gameAssets.audioListener = listener;
-}
-
-export function createAudio(name, loop = false, volume = 1) {
-  if (gameAssets.audioObjects?.[name]) return gameAssets.audioObjects[name];
-  if (!gameAssets.audioBuffers[name]) {
-    console.warn(`Audio ${name} not found!`);
+export function createAudio(bufferName, loop = false, volume = 1) {
+  if (!gameAssets.audioBuffers[bufferName]) {
+    console.warn(`Audio buffer ${bufferName} not found!`);
     return;
   }
 
@@ -21,18 +14,21 @@ export function createAudio(name, loop = false, volume = 1) {
   }
 
   const audio = new Audio(listener);
-  audio.setBuffer(gameAssets.audioBuffers[name]);
+  audio.setBuffer(gameAssets.audioBuffers[bufferName]);
   audio.setLoop(loop);
   audio.setVolume(volume);
-  gameAssets.audioObjects[name] = audio;
 
   return audio;
 }
 
-export function createPositionalAudio(name, object, volume = 1, distance = 10) {
-  if (gameAssets.audioObjects?.[name]) return gameAssets.audioObjects[name];
-  if (!gameAssets.audioBuffers[name]) {
-    console.warn(`Positional audio ${name} not found!`);
+export function createPositionalAudio(
+  bufferName,
+  volume = 1,
+  loop = false,
+  distance = 10
+) {
+  if (!gameAssets.audioBuffers[bufferName]) {
+    console.warn(`Positional audio buffer ${bufferName} not found!`);
     return;
   }
 
@@ -43,12 +39,10 @@ export function createPositionalAudio(name, object, volume = 1, distance = 10) {
   }
 
   const positionalAudio = new PositionalAudio(listener);
-  positionalAudio.setBuffer(gameAssets.audioBuffers[name]);
+  positionalAudio.setBuffer(gameAssets.audioBuffers[bufferName]);
+  positionalAudio.setLoop(loop);
   positionalAudio.setVolume(volume);
   positionalAudio.setRefDistance(distance);
-
-  object.add(positionalAudio);
-  gameAssets.audioObjects[name] = positionalAudio;
 
   return positionalAudio;
 }

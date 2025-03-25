@@ -7,11 +7,13 @@ import {
 import { activeObjects, removeAllObjects } from "../systems/objectSystem";
 import gameStore from "./gameStore";
 import { gameAssets } from "./gameAssets";
-import { createAudio } from "../systems/audioSystem";
 import {
   gameResultElement,
+  menuBackdropElement,
   menuScreenElement,
   powerElement,
+  resumeBtnElement,
+  startBtnElement,
 } from "../domElements";
 import createModal from "../utils/createModal.js";
 
@@ -34,7 +36,7 @@ export async function initializeNewGame() {
   attackInterval = setInterval(enemyAttack, 3000);
   stoneLimitInterval = setInterval(() => enforceStoneLimit(10), 2000);
 
-  const backgroundAudio = createAudio("background", true, 0.05);
+  const backgroundAudio = gameAssets.audioObjects.background;
   if (backgroundAudio && !backgroundAudio.isPlaying) backgroundAudio.play();
 
   powerElement.classList.remove("hidden");
@@ -52,6 +54,12 @@ function gameLost() {
   gameResultElement.classList.add("lost");
 
   gameStore.dispatch({ type: "GAME_LOST" });
+
+  gameAssets.audioObjects.background.stop();
+  gameAssets.audioObjects.lost.play();
+  gameAssets.audioObjects.lost.source.ondnded = () => {
+    returnToMenu();
+  };
 }
 
 function gameWon() {
@@ -63,6 +71,11 @@ function gameWon() {
   gameResultElement.classList.add("won");
 
   gameStore.dispatch({ type: "GAME_WON" });
+  gameAssets.audioObjects.background.stop();
+  gameAssets.audioObjects.won.play();
+  gameAssets.audioObjects.won.source.onended = () => {
+    returnToMenu();
+  };
 }
 
 function resetGame() {
@@ -107,7 +120,7 @@ function positionUserCatapult() {
   const { body: userCatapultBody, mesh: userCatapultMesh } =
     gameAssets.catapultPool.getObject();
 
-  userCatapultBody.userData.name = "playerCatapult";
+  userCatapultBody.userData.name = "userCatapult";
   userCatapultBody.position.set(
     USER_CATAPULT_POSITION.x,
     USER_CATAPULT_POSITION.y,
@@ -166,6 +179,15 @@ export function enemyAttack() {
       Math.random() * 12.5 + 8,
       "enemyStone"
     );
+
+    const shootSound = enemyCatapult.mesh.userData.sounds.shootSound;
+    if (shootSound && shootSound.isPlaying) shootSound.stop();
+    shootSound?.play();
+
+    gameStore.dispatch({
+      type: "SET_USER_SHOOT_VELOCITY",
+      payload: 4,
+    });
   }
 }
 
@@ -188,10 +210,11 @@ export function checkGameEnd() {
   if (!gameStore.getState().isPlaying) return;
 
   const enemyCatapults = getEnemyCatapults();
-  const playerCatapult = getPlayerCatapult();
+  const userCatapult = getCatapultByName("userCatapult");
+
   if (enemyCatapults.length === 0) {
     gameWon();
-  } else if (!playerCatapult) {
+  } else if (!userCatapult) {
     gameLost();
   }
 }
@@ -214,11 +237,6 @@ export function throwStone(position, shootDirection, shootVelocity, name) {
   y += shootDirection.y * 3;
   z += shootDirection.z * 2;
   stoneBody.position.set(x, y, z);
-
-  gameStore.dispatch({
-    type: "SET_USER_SHOOT_VELOCITY",
-    payload: 4,
-  });
 }
 
 function getEnemyCatapults() {
@@ -226,9 +244,10 @@ function getEnemyCatapults() {
     object.body.userData.name.startsWith("enemyCatapult")
   );
 }
-function getPlayerCatapult() {
+
+export function getCatapultByName(name) {
   return activeObjects.catapults.find(
-    (object) => object.body.userData.name === "playerCatapult"
+    (object) => object.body.userData.name === name
   );
 }
 
@@ -252,4 +271,11 @@ function getLevelFromUser() {
       cancelText: "Cancel",
     });
   });
+}
+
+function returnToMenu() {
+  menuScreenElement.classList.remove("hidden");
+  startBtnElement.innerHTML = "Start";
+  menuBackdropElement.classList.remove("hidden");
+  resumeBtnElement.classList.add("hidden");
 }

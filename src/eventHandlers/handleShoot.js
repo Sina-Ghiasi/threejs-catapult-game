@@ -1,16 +1,25 @@
 import { Vector3 } from "three";
-import { USER_CATAPULT_POSITION } from "../config/constants";
 import gameStore from "../game/gameStore";
-import { throwStone } from "../game/gameLogic";
+import { getCatapultByName, throwStone } from "../game/gameLogic";
 
 export default function handleShoot() {
   const { isPlaying, userShootVelocity } = gameStore.getState();
   if (isPlaying) {
+    const { mesh, body } = getCatapultByName("userCatapult");
     throwStone(
-      USER_CATAPULT_POSITION,
+      body.position,
       new Vector3(1, 1, 0),
       userShootVelocity,
       "userStone"
     );
+
+    const shootSound = mesh.userData.sounds.shootSound;
+    if (shootSound && shootSound.isPlaying) shootSound.stop();
+    shootSound?.play();
+
+    gameStore.dispatch({
+      type: "SET_USER_SHOOT_VELOCITY",
+      payload: 4,
+    });
   }
 }

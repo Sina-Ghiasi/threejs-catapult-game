@@ -1,5 +1,4 @@
 import initGameAssets from "./game/gameAssets.js";
-import initAudio from "./systems/audioSystem.js";
 import initPhysics from "./systems/physicsSystem.js";
 import initRenderer from "./systems/renderSystem.js";
 import initEventListeners from "./systems/eventSystem.js";
@@ -9,7 +8,6 @@ window.addEventListener("load", async () => {
   await initGameAssets();
   initEventListeners();
 
-  initAudio();
   initPhysics();
   initRenderer();
   gameUpdateLoop();

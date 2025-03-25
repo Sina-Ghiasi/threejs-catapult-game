@@ -15,7 +15,7 @@ export function loadAudio(path, manager) {
 export async function loadAudios(audioPaths, manager) {
   const entries = Object.entries(audioPaths);
   const audioBuffers = await Promise.all(
-    entries.map(([key, path]) => loadAudio(path, manager))
+    entries.map(([, path]) => loadAudio(path, manager))
   );
 
   return entries.reduce((acc, [key], index) => {

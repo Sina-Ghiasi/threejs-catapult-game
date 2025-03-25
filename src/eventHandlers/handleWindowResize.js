@@ -1,6 +1,6 @@
 import { gameAssets } from "../game/gameAssets";
 import gameStore from "../game/gameStore";
-import { getWindowAspectRatio, isMobileView } from "../utils/viewPortTools";
+import { getWindowAspectRatio, isMobileView } from "../utils/viewportTools";
 
 export default function handleWindowResize() {
   if (isMobileView()) {

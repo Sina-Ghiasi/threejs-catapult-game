@@ -9,7 +9,6 @@ import {
   NearestFilter,
   RepeatWrapping,
   SphereGeometry,
-  TextureLoader,
 } from "three";
 
 export function createStoneBody() {

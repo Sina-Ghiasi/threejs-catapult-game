@@ -6,7 +6,6 @@ import {
   MeshPhongMaterial,
   NearestFilter,
   RepeatWrapping,
-  TextureLoader,
 } from "three";
 import { physicsMaterial } from "../systems/physicsSystem";
 

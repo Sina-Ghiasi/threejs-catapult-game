@@ -14,7 +14,7 @@ export function loadTexture(path, manager) {
 
 export async function loadTextures(texturePaths, manager) {
   const entries = Object.entries(texturePaths);
-  const promises = entries.map(([key, path]) => loadTexture(path, manager));
+  const promises = entries.map(([, path]) => loadTexture(path, manager));
   const loadedTextures = await Promise.all(promises);
 
   return entries.reduce((acc, [key], index) => {

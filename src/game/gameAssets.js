@@ -9,13 +9,14 @@ import createCameras from "../envirement/cameras";
 import createLights from "../envirement/lights";
 import createSkyBox from "../envirement/skyBox";
 import { World } from "cannon-es";
-import { LoadingManager, Scene, WebGLRenderer } from "three";
+import { AudioListener, LoadingManager, Scene, WebGLRenderer } from "three";
 import { createGround } from "../envirement/ground";
 import createTower from "../objects/tower";
 import { loadTextures } from "../utils/loadTexture";
 import { loadAudios } from "../utils/loadAudio";
 import createStats from "../utils/createStats";
 import { BASE_URL, IS_DEV_MODE } from "../config/env";
+import { createAudio } from "../systems/audioSystem";
 
 export const gameAssets = {
   world: null,
@@ -39,9 +40,11 @@ export const gameAssets = {
 export default async function initGameAssets() {
   try {
     const { models, textures, audioBuffers } = await loadGameAssets();
+
     initEnvironment(textures);
+    initListener();
+    initGameAudios(audioBuffers);
     initGameEntities(models, textures);
-    gameAssets.audioBuffers = audioBuffers;
 
     gameStore.dispatch({
       type: "SET_ACTIVE_CAMERA",
@@ -50,7 +53,7 @@ export default async function initGameAssets() {
     gameStore.dispatch({ type: "LOADED" });
     loadingScreenElement.classList.add("hidden");
   } catch (error) {
-    console.error("Error loading initial game assets:", error);
+    console.error("Error loading initial game assets:", error.stack);
     alert("Error loading game assets");
   }
 }
@@ -76,6 +79,10 @@ async function loadGameAssets() {
   const audioBuffers = await loadAudios(
     {
       background: `${BASE_URL}sounds/background.ogg`,
+      won: `${BASE_URL}sounds/won.ogg`,
+      lost: `${BASE_URL}sounds/lost.ogg`,
+      catapultShoot: `${BASE_URL}sounds/catapult-shoot.ogg`,
+      catapultHit: `${BASE_URL}sounds/catapult-hit.ogg`,
     },
     manager
   );
@@ -110,6 +117,12 @@ function initEnvironment(textures) {
   gameAssets.world.addBody(gameAssets.ground.body);
 }
 
+function initListener() {
+  const listener = new AudioListener();
+  gameAssets.cameras.camera1.add(listener);
+  gameAssets.audioListener = listener;
+}
+
 function initGameEntities(models, textures) {
   gameAssets.catapultPool = createPool(
     () => createCatapultMesh(models.catapult.scene),
@@ -128,4 +141,11 @@ function initGameEntities(models, textures) {
   );
 
   gameAssets.userTower = createTower(models.tower.scene);
+}
+
+function initGameAudios(audioBuffers) {
+  gameAssets.audioBuffers = audioBuffers;
+  gameAssets.audioObjects.background = createAudio("background", true, 0.1);
+  gameAssets.audioObjects.won = createAudio("won", false, 0.15);
+  gameAssets.audioObjects.lost = createAudio("lost", false, 0.15);
 }
