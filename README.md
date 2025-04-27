@@ -91,9 +91,9 @@ The output will be in the `dist` folder. Serve it with any static file server.
 
 ## 📸 Screenshots
 
-| Main Menu (Level Selection)                                                                                      | Gameplay Action                                                                                                |
-| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| ![Main Menu](https://raw.githubusercontent.com/Sina-Ghiasi/threejs-catapult-game/main/screenshots/main_menu.png) | ![Gameplay](https://raw.githubusercontent.com/Sina-Ghiasi/threejs-catapult-game/main/screenshots/gameplay.png) |
+| Main Menu                                                                                                          | Gameplay                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| ![Main Menu](https://raw.githubusercontent.com/Sina-Ghiasi/threejs-catapult-game/master/screenshots/main-menu.png) | ![Gameplay](https://raw.githubusercontent.com/Sina-Ghiasi/threejs-catapult-game/master/screenshots/gameplay.png) |
 
 ## 🤝 Contributing
 
